@@ -22,7 +22,7 @@
 <script>
 export default {
 	onLoad() {
-		this.$u.utils.ifLogin();
+		// this.$u.utils.ifLogin(); 测试用的
 		this.getData();
 	},
 	data() {

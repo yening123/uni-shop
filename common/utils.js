@@ -1,7 +1,7 @@
 const install = (Vue, vm) => {
   vm.$u.utils = {};
 
-  vm.$u.utils.ifLogin = (path) => {
+  vm.$u.utils.ifLogin = () => {
     const token = vm.vuex_token;
     if (!token) {
       //获取来自哪个页面，然后跳转回去
@@ -33,6 +33,11 @@ const install = (Vue, vm) => {
     return true;
   };
 
+  vm.$u.utils.getUserInfo = async (params) => {
+    //拿到user的数据
+    const userInfo = await vm.$u.api.userMsg(params);
+    vm.$u.vuex('vuex_user', userInfo);
+  }
 }
 
 export default {

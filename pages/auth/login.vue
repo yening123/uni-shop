@@ -47,12 +47,13 @@ export default {
 			this.$u.toast('登录成功')
 
 			//拿到user的数据
-			const LoginRef = await this.$u.api.userMsg({ email: this.form.email });
-			this.$u.vuex('vuex_user', LoginRef);
+			// const LoginRef = await this.$u.api.userMsg({ email: this.form.email });
+			// this.$u.vuex('vuex_user', LoginRef);
+			this.$u.utils.getUserInfo();
 
 			const path = uni.getStorageSync('back_path') || 'pages/my/my';
 
-		
+
 			setTimeout(() => {
 				this.$u.route({
 					type: 'reLaunch',
