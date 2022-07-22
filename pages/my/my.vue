@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="u-flex user-box u-p-l-30 u-p-r-20 u-p-b-30">
+		<view class="u-flex user-box u-p-l-30 u-p-r-20 u-p-b-20">
 			<view class="u-m-r-10 u-m-t-30 avatar">
 				<oss-upload></oss-upload>
 			</view>

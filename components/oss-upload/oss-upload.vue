@@ -4,7 +4,7 @@
 			:multiple="false" :deletable="false" width="0" height="0" @on-success="onSuccess" :max-size="5 * 1024 * 1024"
 			ref="upload">
 			<!-- 头像代替加好+ -->
-			<u-avatar slot="addBtn" :src="vuex_user.avatar_url" size="140"></u-avatar>
+			<u-avatar slot="addBtn" :src="vuex_user.avatar_url" size="180"></u-avatar>
 		</u-upload>
 	</view>
 </template>
