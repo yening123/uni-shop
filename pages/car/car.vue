@@ -1,25 +1,25 @@
 <template>
 	<view class="container">
 		<view class="goods">
-			<view class="goods-item" v-for="(item, index) in cars" :key="index">
+			<view class="goods-item" v-for="item in cartsList" :key="item.id">
 				<view class="goods-item-left">
 					<u-checkbox></u-checkbox>
 				</view>
 
 				<view class="goods-item-right">
-					<view class="goods-pic">图片</view>
+					<u-image width="100%" height="300rpx" :src="item.goods.cover_url"></u-image>
 					<view class="goods-con">
-						<view class="goods-title">{{ item.name }}</view>
-						<view class="goods-desc">{{ item.desc }}</view>
-						<view class="goods-total">库存：<text class="goods-total__num">{{ item.total }}</text></view>
+						<view class="goods-title">{{ item.goods.title }}</view>
+						<view class="goods-desc">{{ item.goods.description }}</view>
+						<view class="goods-total">库存：<text class="goods-total__num">{{ item.goods.stock }}</text></view>
 						<view class="goods-control">
-							<text>￥{{ item.price }}</text>
+							<text>￥{{ item.goods.price }}</text>
 							<view class="num-control">
 								<text class="num-control__minus">-</text>
-								<text class="num-control__num">{{ item.num }}</text>
+								<text class="num-control__num">{{ item.goods.is_on }}</text>
 								<text class="num-control__add">+</text>
 							</view>
-							<u-icon name="trash"></u-icon>
+							<u-icon name="trash" @click="rmGoods(item.id)"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -34,39 +34,34 @@
 export default {
 	data() {
 		return {
-			cars: [
-				{
-					id: 1,
-					name: '《人工智能》',
-					price: 100,
-					total: 999,
-					num: 1,
-					desc: '无敌'
-				},
-				{
-					id: 1,
-					name: '《JAVA程序设计》',
-					price: 48,
-					total: 999,
-					num: 1,
-					desc: '很好'
-				},
-				{
-					id: 1,
-					name: '《python教程》',
-					price: 50,
-					total: 999,
-					num: 1,
-					desc: 'hello'
-				},
-			]
+			src: "",
+			cartsList: [],
+			goodsList: [],
 		}
 	},
-	onLoad() {
-
+	onShow() {
+		this.getCartList();
 	},
 	methods: {
+		async getCartList() {
+			const params = {
+				include: 'goods'
+			};
 
+			const res = await this.$u.api.cartsList(params);
+			this.cartsList = res.data;
+		},
+		rmGoods(id) {
+			this.$u.debounce(async () => {
+				const res = await this.$u.api.moveCart(id);
+
+				if (!res.success) {
+					return this.$u.toast('删除失败！');
+				}
+
+				this.getCartList();
+			}, 500)
+		}
 	}
 }
 </script>
@@ -75,6 +70,7 @@ export default {
 .container {
 	padding: 10px;
 }
+
 .goods {
 	&-item {
 		padding: 10px;
@@ -117,6 +113,7 @@ export default {
 
 	&-total {
 		text-align: right;
+
 		&__num {
 			color: red;
 		}
@@ -129,8 +126,9 @@ export default {
 		justify-content: space-around;
 	}
 }
+
 .num-control {
-	> * {
+	>* {
 		margin: 0 10px;
 	}
 }

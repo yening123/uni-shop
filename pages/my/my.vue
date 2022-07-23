@@ -19,7 +19,7 @@
 		<view class="u-m-t-20">
 			<u-cell-group>
 				<u-cell-item icon="rmb-circle" title="所有订单"></u-cell-item>
-				<u-cell-item icon="star" title="商品收藏"></u-cell-item>
+				<u-cell-item icon="star" title="商品收藏" @click="toCollection"></u-cell-item>
 				<u-cell-item icon="map" title="收货地址"></u-cell-item>
 			</u-cell-group>
 		</view>
@@ -71,6 +71,12 @@ export default {
 				url: '/pages/my/baseInfo'
 			})
 		},
+		toCollection() {
+			this.$u.route({
+				type: 'navigateTo',
+				url: '/pages/my/collection'
+			})
+		},
 		async logout() {
 			await this.$u.api.userLogout();
 			this.$u.toast('退出成功');
@@ -83,7 +89,8 @@ export default {
 					url: '/pages/home/home'
 				})
 			}, 1000)
-		}
+		},
+
 	}
 }
 </script>

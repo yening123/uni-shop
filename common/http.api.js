@@ -28,6 +28,29 @@ const install = (Vue, vm) => {
 	//修改头像
 	vm.$u.api.putUserAvatar = (params) => vm.$u.post('/api/user/avatar', params);
 
+	//商品详细信息
+	vm.$u.api.goodsDetail = (id) => vm.$u.get(`/api/goods/${id}`);
+
+	//收藏和取消
+	vm.$u.api.CollectAndCancel = (id) => vm.$u.post(`/api/collects/goods/${id}`);
+
+	//加入购物车
+	vm.$u.api.cartsAdd = (id) => vm.$u.post('/api/carts', id);
+
+	//购物车信息
+	vm.$u.api.cartsList = (params) => vm.$u.get('/api/carts', params);
+
+	//商品列表
+	vm.$u.api.goodsList = (params = {}) => vm.$u.get(`/api/goods`, params);
+
+	//收藏信息
+	vm.$u.api.collection = (page) => vm.$u.get('/api/collects', page);
+
+	//移出购物车 id是7420类型
+	// vm.$u.api.moveCart = (id) => vm.$u.delete(`/api/carts`, id);
+
+	vm.$u.api.moveCart = (id) => vm.$u.delete(`/api/carts/${id}`);
+
 }
 
 export default {

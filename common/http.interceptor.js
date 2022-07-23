@@ -6,7 +6,7 @@ const install = (Vue, vm) => {
 		// method: 'POST',
 		// 设置为json，返回后会对数据进行一次JSON.parse()
 		dataType: 'json',
-		showLoading: false, // 是否显示请求中的loading
+		showLoading: true, // 是否显示请求中的loading
 		loadingText: '请求中...', // 请求loading中的文字提示
 		loadingTime: 100, // 在此时间内，请求还没回来的话，就显示加载中动画，单位ms
 		originalData: true, // 是否在拦截器中返回服务端的原始数据   开了会有它的状态码等消息
@@ -46,27 +46,36 @@ const install = (Vue, vm) => {
 
 	// 响应拦截，判断状态码是否通过
 	Vue.prototype.$u.http.interceptor.response = (res) => {
-		const {
+		let {
 			statusCode,
 			data
 		} = res //解构赋值
+		
+		data = data ? Object.assign(data, { success: true }) : { success: true };
+	
 		if (statusCode < 400) {
 			// res为服务端返回值，可能有code，result等字段
 			// 这里对res.result进行返回，将会在this.$u.post(url).then(res => {})的then回调中的res的到
 			// 如果配置了originalData为true，请留意这里的返回值
 			// !!! return data 将在this.$u.post(url).then(res => {console.log(res);	})
 			return data;
-		} else if (statusCode == 400) {
+		} 
+
+		data.success = false;
+
+		if (statusCode == 400) {
 			//错误的请求  小程序绑定或解绑那里有
 			// console.log(res); 
 			vm.$u.toast(data.message);
-			return false;
-		} else if (statusCode == 401) {
+			// return false;
+		} 
+
+		if (statusCode == 401) {
 			// const path = vm.$route.path;
 			const {
 				message
 			} = res.data;
-			console.log(message);
+
 			//登录没这个账号 !!!!!!
 			if (message === "Unauthorized") {
 				vm.$u.toast('邮箱或密码错误');
@@ -75,19 +84,22 @@ const install = (Vue, vm) => {
 				vm.$u.toast('请先登录账号');
 				vm.$u.utils.ifLogin();
 			}
-			return false;
-		} else if (statusCode == 422) {
+
+			// return false;
+		} 
+
+		if (statusCode == 422) {
 			//没给参数提示
 			const {
 				errors
 			} = data;
 			vm.$u.toast(Object.values(errors)[0][0]); //妙哉！ P27有
-			return false;
-		} else {
-			// 如果返回false，则会调用Promise的reject回调，
-			// 并将进入this.$u.post(url).then().catch(res=>{})的catch回调中，res为服务端的返回值
-			return false;
-		}
+			// return false;
+		} 
+
+		// 如果返回false，则会调用Promise的reject回调，
+		// 并将进入this.$u.post(url).then().catch(res=>{})的catch回调中，res为服务端的返回值
+		return data;
 	}
 	//封装patch请求
 	vm.$u.patch = (url, params = {}, header = {}) => {

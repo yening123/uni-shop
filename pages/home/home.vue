@@ -20,67 +20,67 @@
 </template>
 
 <script>
-export default {
-	onLoad() {
-		// this.$u.utils.ifLogin(); 测试用的
-		this.getData();
-	},
-	data() {
-		return {
-			//录播图图片
-			slides: [],
-			goodsList: [],
-
-			tabslist: [{
-				name: '首页'
-			}, {
-				name: '热销'
-			}, {
-				name: '推荐',
-			}, {
-				name: '最新',
-			}],
-			currentIndex: 0,
-			page: 1,
-			loading: true, // 是否显示骨架屏组件
-		}
-	},
-	methods: {
-		change(index) {
-			this.currentIndex = index;
-			this.goodsList = [];
-			//重置不同商品的页数
-			this.page = 1;
+	export default {
+		onLoad() {
+			// this.$u.utils.ifLogin(); 测试用的
 			this.getData();
 		},
-		async getData() {
-			this.loading = true;
-			const params = {
-				page: this.page,
+		data() {
+			return {
+				//录播图图片
+				slides: [],
+				goodsList: [],
+
+				tabslist: [{
+					name: '首页'
+				}, {
+					name: '热销'
+				}, {
+					name: '推荐',
+				}, {
+					name: '最新',
+				}],
+				currentIndex: 0,
+				page: 1,
+				loading: true, // 是否显示骨架屏组件
 			}
-			if (this.currentIndex == 1) params.sales = 1;
-			if (this.currentIndex == 2) params.recommend = 1;
-			if (this.currentIndex == 3) params.new = 1;
-			const res = await this.$u.api.index(params);
-			// console.log(res);
-			this.loading = false;
-			this.slides = res.slides;
-			// console.log(this.slides);
-			this.goodsList = [...this.goodsList, ...res.goods.data];
-			// console.log(this.goodsList);
+		},
+		methods: {
+			change(index) {
+				this.currentIndex = index;
+				this.goodsList = [];
+				//重置不同商品的页数
+				this.page = 1;
+				this.getData();
+			},
+			async getData() {
+				this.loading = true;
+				const params = {
+					page: this.page,
+				}
+				if (this.currentIndex == 1) params.sales = 1;
+				if (this.currentIndex == 2) params.recommend = 1;
+				if (this.currentIndex == 3) params.new = 1;
+				const res = await this.$u.api.index(params);
+				// console.log(res);
+				this.loading = false;
+				this.slides = res.slides;
+				// console.log(this.slides);
+				this.goodsList = [...this.goodsList, ...res.goods.data];
+				// console.log(this.goodsList);
+
+			}
+		},
+		onReachBottom() {
+			this.page = this.page + 1;
+			this.getData();
 
 		}
-	},
-	onReachBottom() {
-		this.page = this.page + 1;
-		this.getData();
-
 	}
-}
 </script>
 
 <style lang="scss" scoped>
-.tabs {
-	padding: 20rpx 0;
-}
+	.tabs {
+		padding: 20rpx 0;
+	}
 </style>
