@@ -2,7 +2,7 @@
 	<view>
 		<u-row gutter="16" class="u-skeleton">
 			<!--  [{},{},{},{}]骨架框用到 -->
-			<u-col span="6" v-for="(good, index) in goodslist.length ? goodslist : [{}, {}, {}, {}, {}, {}]" :key="index">
+			<u-col span="6" v-for="(good, index) in goodslist.length ? goodslist : []" :key="index">
 				<goods-card :good="good.goods"></goods-card>
 			</u-col>
 		</u-row>
@@ -32,7 +32,7 @@ export default {
 			const res = await this.$u.api.collection(params);
 			this.loading = false;
 			this.goodslist = res.data;
-			console.log(this.goodslist);
+			// console.log(this.goodslist);
 		}
 	}
 }

@@ -3,7 +3,7 @@
 		<view class="goods">
 			<view class="goods-item" v-for="item in cartsList" :key="item.id">
 				<view class="goods-item-left">
-					<u-checkbox></u-checkbox>
+					<u-checkbox shape="circle" @change="handleCheck(item)" v-model="item.checked"></u-checkbox>
 				</view>
 
 				<view class="goods-item-right">
@@ -15,9 +15,9 @@
 						<view class="goods-control">
 							<text>￥{{ item.goods.price }}</text>
 							<view class="num-control">
-								<text class="num-control__minus">-</text>
-								<text class="num-control__num">{{ item.goods.is_on }}</text>
-								<text class="num-control__add">+</text>
+								<text class="num-control__btn" @click="changeGoodsNum('minus', item)">-</text>
+								<text class="num-control__num">{{ item.num }}</text>
+								<text class="num-control__btn" @click="changeGoodsNum('add', item)">+</text>
 							</view>
 							<u-icon name="trash" @click="rmGoods(item.id)"></u-icon>
 						</view>
@@ -26,7 +26,16 @@
 			</view>
 		</view>
 
-		<view class="shop"></view>
+		<view class="shop">
+			<u-checkbox shape="circle" @change="handleCheckAll" v-model="isCheckAll">全选</u-checkbox>
+			<view class="u-flex">
+				<view class="u-m-r-40">
+					<text class="total">合计</text>
+					<text class="totalprice">￥{{ sum }}</text>
+				</view>
+				<u-button class="settlement" type="primary" size="mini">结算</u-button>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -36,19 +45,45 @@ export default {
 		return {
 			src: "",
 			cartsList: [],
-			goodsList: [],
+			isCheckAll: false,
+			num: 0,
+			sum: 0,
 		}
 	},
 	onShow() {
 		this.getCartList();
 	},
+	watch: {
+		cartsList: {
+			handler() {
+				this.sum = this.cartsList.reduce((pre, cur) => {
+					return cur.checked ? pre + cur.goods.price * cur.num : pre;
+				}, 0)
+			},
+			immediate: true,
+			deep: true
+		}
+	},
 	methods: {
-		async getCartList() {
-			const params = {
-				include: 'goods'
+		async changeGoodsNum(type, item) {
+			const originNum = item.num;
+
+			type == 'add' ? item.num++ : item.num--;
+
+			const res = await this.$u.api.changeGoodsNum({ id: item.id, num: item.num });
+
+			if (!res.success) {
+				item.num = originNum;
 			};
+		},
+		async getCartList() {
+			const params = { include: 'goods' };
 
 			const res = await this.$u.api.cartsList(params);
+
+			if (!res.success) return;
+
+			res.data.forEach(item => item.checked = false);
 			this.cartsList = res.data;
 		},
 		rmGoods(id) {
@@ -61,6 +96,24 @@ export default {
 
 				this.getCartList();
 			}, 500)
+		},
+		handleCheck(item) {
+			item.checked = !item.checked;
+
+			if (this.cartsList.every(item => item.checked)) {
+				this.isCheckAll = true;
+			} else {
+				this.isCheckAll = false;
+			}
+		},
+		handleCheckAll() {
+			if (this.cartsList.every(item => item.checked)) {
+				this.cartsList.forEach(item => item.checked = false);
+				this.allCheck = false;
+			} else {
+				this.cartsList.forEach(item => item.checked = true);
+				this.allCheck = true;
+			}
 		}
 	}
 }
@@ -68,7 +121,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-	padding: 10px;
+	padding: 10px 10px 60px 10px;
 }
 
 .goods {
@@ -97,7 +150,7 @@ export default {
 	}
 
 	&-con {
-		padding: 20rpx;
+		padding: 10rpx;
 		width: 100%;
 	}
 
@@ -130,6 +183,49 @@ export default {
 .num-control {
 	>* {
 		margin: 0 10px;
+	}
+
+	&__btn {
+		background-color: #f2f3f5;
+		padding: 0 4px;
+	}
+}
+
+.shop {
+	display: flex;
+	align-items: center;
+	position: fixed;
+	left: 0%;
+	bottom: 50px;
+	width: 100%;
+	height: 60px;
+	background-color: white;
+	padding: 0 20px;
+	justify-content: space-between;
+	border-top: 1px solid #efefef;
+
+	.settlement {
+		margin: 0;
+		width: 70px !important;
+		height: 36px !important;
+		font-size: 13px !important;
+		background-color: rgb(228, 79, 171);
+	}
+
+	.total {
+		font-size: 13px;
+		font-weight: 800;
+	}
+
+	.box {
+		display: flex;
+		align-items: center;
+	}
+
+	.totalprice {
+		font-weight: 800;
+		color: rgb(196, 45, 45);
+		font-size: 16px;
 	}
 }
 </style>

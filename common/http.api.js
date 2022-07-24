@@ -48,9 +48,15 @@ const install = (Vue, vm) => {
 
 	//移出购物车 id是7420类型
 	// vm.$u.api.moveCart = (id) => vm.$u.delete(`/api/carts`, id);
-
 	vm.$u.api.moveCart = (id) => vm.$u.delete(`/api/carts/${id}`);
 
+	// 注册
+	vm.$u.api.authRegister = (params = {}) => vm.$u.post('/api/auth/register', params);
+
+	//改变购物车选中
+	vm.$u.api.authRegister = (params) => vm.$u.patch('/api/carts/checked', params);
+
+	vm.$u.api.changeGoodsNum = (params) => vm.$u.put(`/api/carts/${params.id}`, params);
 }
 
 export default {

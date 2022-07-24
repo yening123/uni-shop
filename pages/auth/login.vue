@@ -8,7 +8,7 @@
 			<button @tap="submit" :style="[inputStyle]" class="getCaptcha">登录</button>
 			<view class="alternative">
 				<view class="password">找回密码</view>
-				<view class="issue">注册</view>
+				<view class="issue" @click="toRegister">注册</view>
 			</view>
 		</view>
 	</view>
@@ -61,6 +61,12 @@ export default {
 				})
 			}, 1000)
 
+		},
+		toRegister() {
+			this.$u.route({
+				type: 'navigateTo',
+				url: '/pages/auth/register'
+			})
 		}
 	}
 };
