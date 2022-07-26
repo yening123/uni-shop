@@ -13,6 +13,9 @@ export default {
 	onReady() {
 		this.$refs.uForm.setRules(this.rules);
 	},
+	onShow() {
+		this.$u.utils.isAndroid();
+	},
 	data() {
 		return {
 			form: {
@@ -39,7 +42,7 @@ export default {
 					this.$u.utils.getUserInfo(this.form);
 					this.$u.toast('更新成功');
 
-					
+
 				}
 			});
 			//更新用户信息

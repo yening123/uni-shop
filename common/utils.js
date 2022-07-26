@@ -37,7 +37,16 @@ const install = (Vue, vm) => {
     //拿到user的数据
     const userInfo = await vm.$u.api.userMsg(params);
     vm.$u.vuex('vuex_user', userInfo);
-  }
+  },
+
+    vm.$u.utils.isAndroid = () => {
+      try {
+        const res = uni.getSystemInfoSync();
+        console.log(res.platform);
+      } catch (e) {
+
+      }
+    }
 }
 
 export default {

@@ -20,8 +20,8 @@ export default {
 	data() {
 		return {
 			form: {
-				email: 'test@a.com',
-				password: '123123'
+				email: 'nini@a.com',
+				password: '123654'
 			},
 		}
 	},
