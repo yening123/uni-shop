@@ -7,7 +7,7 @@ uni-shop
 ![输入图片说明](static/4.png)
 ![输入图片说明](static/5.png)
 ![输入图片说明](static/6.png)
-![输入图片说明](static/7.png)
+![输入图片说明](static/x.png)
 ![输入图片说明](static/8.png)
 
 
